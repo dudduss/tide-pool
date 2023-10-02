@@ -14,6 +14,7 @@ import {
   NumberDecrementStepper,
   Box,
   Center,
+  Button,
 } from '@chakra-ui/react';
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons';
 import { Cruise } from '@/types';
@@ -47,6 +48,14 @@ const columns = [
     cell: (info) => info.getValue(),
     header: 'Country',
   }),
+  columnHelper.accessor('data_processor_organization', {
+    cell: (info) => info.getValue(),
+    header: 'Data Processor Organization',
+  }),
+  columnHelper.accessor('is_rejected', {
+    cell: (info) => <Text>{info.getValue() === 'f' ? '✅' : '❌'}</Text>,
+    header: 'Approved',
+  }),
   columnHelper.accessor('created', {
     cell: (info) => info.getValue(),
     header: 'Created',
@@ -63,6 +72,22 @@ const columns = [
     cell: (info) => info.getValue(),
     header: 'Total Area',
   }),
+  columnHelper.accessor('track_length', {
+    cell: (info) => info.getValue(),
+    header: 'Track Length',
+  }),
+  columnHelper.accessor('file_count', {
+    cell: (info) => info.getValue(),
+    header: 'File Count',
+  }),
+  columnHelper.accessor('url', {
+    cell: (info) => (
+      <Button colorScheme='blue' onClick={() => window.open(info.getValue(), '_blank')}>
+        View
+      </Button>
+    ),
+    header: 'Detail',
+  }),
 ];
 
 interface CruisesTableState {
@@ -72,40 +97,43 @@ interface CruisesTableState {
   currentResults: Cruise[];
   numPages: number;
   totalAreaCurrentResults: number;
+  totalAreaAllResults: number;
 }
 
-type Action =
+type CruisesTableAction =
   | { type: 'SET_PAGE'; payload: { pageNumber: number } }
   | { type: 'SET_RESULTS'; payload: Cruise[] }
   | { type: 'SET_PAGE_SIZE'; payload: { pageSize: number } };
 
-const initialState: CruisesTableState = {
-  pageNumber: 0,
-  pageSize: 10,
-  allResults: [],
-  currentResults: [],
-  numPages: 0,
-  totalAreaCurrentResults: 0,
-};
+function getTotalArea(cruises: Cruise[]) {
+  const totalAreas = cruises.map((cruise) => {
+    const totalArea = cruise.total_area ? Number(cruise.total_area) : 0;
+    if (isNaN(totalArea)) {
+      return 0;
+    }
+    return totalArea;
+  });
+  const totalArea = totalAreas.reduce((a, b) => a + b, 0);
+  return totalArea;
+}
 
-function cruisesReducer(state: CruisesTableState, action: Action): CruisesTableState {
+function cruisesReducer(state: CruisesTableState, action: CruisesTableAction): CruisesTableState {
   if (action.type === 'SET_PAGE') {
     const { pageNumber } = action.payload;
     const startIndex = (pageNumber - 1) * state.pageSize;
     const endIndex = startIndex + state.pageSize;
     const currentResults = state.allResults.slice(startIndex, endIndex);
-    const totalAreas = currentResults.map((cruise) => Number(cruise.total_area));
-    const totalArea = totalAreas.reduce((a: number, b: number) => a + b, 0);
+    const totalArea = getTotalArea(currentResults);
     return { ...state, pageNumber, currentResults, totalAreaCurrentResults: totalArea };
   } else if (action.type === 'SET_RESULTS') {
     const numPages = Math.ceil(action.payload.length / state.pageSize);
-    return { ...state, allResults: action.payload, numPages };
+    const totalArea = getTotalArea(action.payload);
+    return { ...state, allResults: action.payload, numPages, totalAreaAllResults: totalArea };
   } else if (action.type === 'SET_PAGE_SIZE') {
     const { pageSize } = action.payload;
     const numPages = Math.ceil(state.allResults.length / pageSize);
     const currentResults = state.allResults.slice(0, pageSize);
-    const totalAreas = currentResults.map((cruise) => Number(cruise.total_area));
-    const totalArea = totalAreas.reduce((a: number, b: number) => a + b, 0);
+    const totalArea = getTotalArea(currentResults);
     return {
       ...state,
       pageSize: pageSize,
@@ -119,8 +147,16 @@ function cruisesReducer(state: CruisesTableState, action: Action): CruisesTableS
   }
 }
 
-
 export default function CruisesTable() {
+  const initialState: CruisesTableState = {
+    pageNumber: 0,
+    pageSize: 10,
+    allResults: [],
+    currentResults: [],
+    numPages: 0,
+    totalAreaCurrentResults: 0,
+    totalAreaAllResults: 0,
+  };
   const cruises = useSelector((state: RootState) => state.main.cruises);
   const [state, dispatch] = useReducer(cruisesReducer, initialState);
 
@@ -147,10 +183,13 @@ export default function CruisesTable() {
 
   return (
     <Box>
+      <Center>
+        <Text>Total Area covered by cruises in this search: </Text>
+        <Text fontWeight={'bold'}>{state.totalAreaAllResults.toLocaleString('en-US')} sq km</Text>
+      </Center>
       <Center marginBottom={10}>
-        <Text>
-          {' '}
-          Total Area covered by cruises on this page:{' '}
+        <Text>Total Area covered by cruises on this page: </Text>
+        <Text fontWeight={'bold'}>
           {state.totalAreaCurrentResults.toLocaleString('en-US')} sq km
         </Text>
       </Center>
