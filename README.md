@@ -43,4 +43,5 @@ The dev server will launch in your browser at [localhost:4444](localhost:4444) a
 - Collapsable table row that shows the full API JSON response for that cruise with all of the fields (including ones that might've not made the table).
 - Ability to see a map and the area of where the cruise took place, either via Google Maps API or another geospatial tool
 - Make a nice little loading animation for the table (probably with a small timeout) to clearly indicate to the user that the app is fetching and loading new data upon each new search.
+- Play around with styling to make it look nicer!
 - Fix this error at the top of my component files -- spent some time on it but couldn't get rid of the compiler errors https://dequeuniversity.com/rules/axe/4.7/select-name?application=axeAPI
