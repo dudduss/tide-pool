@@ -57,7 +57,12 @@ const columns = [
     header: 'Approved',
   }),
   columnHelper.accessor('created', {
-    cell: (info) => info.getValue(),
+    cell: (info) =>
+      new Date(info.getValue()).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
     header: 'Created',
   }),
   columnHelper.accessor('device_make', {
