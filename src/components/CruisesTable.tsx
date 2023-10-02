@@ -110,6 +110,7 @@ type CruisesTableAction =
   | { type: 'SET_RESULTS'; payload: Cruise[] }
   | { type: 'SET_PAGE_SIZE'; payload: { pageSize: number } };
 
+// Calculates the total area of all cruises in the given array
 function getTotalArea(cruises: Cruise[]) {
   const totalAreas = cruises.map((cruise) => {
     const totalArea = cruise.total_area ? Number(cruise.total_area) : 0;
@@ -124,7 +125,9 @@ function getTotalArea(cruises: Cruise[]) {
 
 function cruisesReducer(state: CruisesTableState, action: CruisesTableAction): CruisesTableState {
   if (action.type === 'SET_PAGE') {
+    // Based on the page, calculates the start and end index of cruises to display
     const { pageNumber } = action.payload;
+
     const startIndex = (pageNumber - 1) * state.pageSize;
     const endIndex = startIndex + state.pageSize;
     const currentResults = state.allResults.slice(startIndex, endIndex);
@@ -135,7 +138,9 @@ function cruisesReducer(state: CruisesTableState, action: CruisesTableAction): C
     const totalArea = getTotalArea(action.payload);
     return { ...state, allResults: action.payload, numPages, totalAreaAllResults: totalArea };
   } else if (action.type === 'SET_PAGE_SIZE') {
+    // Resets the page number to 1 and calculates the new current results
     const { pageSize } = action.payload;
+
     const numPages = Math.ceil(state.allResults.length / pageSize);
     const currentResults = state.allResults.slice(0, pageSize);
     const totalArea = getTotalArea(currentResults);
@@ -186,6 +191,7 @@ export default function CruisesTable() {
     );
   }
 
+  // Filtering component inspired by https://codesandbox.io/s/react-table-chakra-ui-pagination-example-fxx0v?file=/src/App.js:3761-4136
   return (
     <Box>
       <Center>

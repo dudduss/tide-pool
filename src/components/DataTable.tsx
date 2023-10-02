@@ -1,4 +1,4 @@
-// inspired by https://codesandbox.io/s/chakra-ui-data-table-vfivp?file=/src/App.tsx:0-1120
+// Used this: https://codesandbox.io/s/chakra-ui-data-table-vfivp?file=/src/App.tsx:0-1120
 
 import * as React from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, chakra } from '@chakra-ui/react';

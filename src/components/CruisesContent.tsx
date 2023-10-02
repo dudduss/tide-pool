@@ -18,6 +18,7 @@ export default function CruisesContent() {
     const response = await fetch('https://www.gmrt.org/services/GmrtCruises.php');
     let cruises = (await response.json()) as Cruise[];
 
+    // Filtering our cruises based on user's input
     if (filterText) {
       cruises = cruises.filter((cruise: Cruise) => {
         return (
@@ -30,6 +31,7 @@ export default function CruisesContent() {
       });
     }
 
+    // Sorting our cruises based on user's input
     if (sortByOption === SortByOption.DateAscending) {
       cruises.sort((a: Cruise, b: Cruise) => {
         return new Date(a.created).getTime() - new Date(b.created).getTime();
@@ -57,6 +59,7 @@ export default function CruisesContent() {
           width={200}
           title='Sort By'
           value={sortByOption}
+          aria-label='Sort By'
           onChange={(e) => {
             setSortByOption(e.target.value as SortByOption);
           }}
@@ -77,7 +80,6 @@ export default function CruisesContent() {
           }}
         ></Input>
       </Center>
-
       <CruisesTable />
     </Box>
   );
