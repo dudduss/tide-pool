@@ -17,6 +17,8 @@ import {
 } from '@chakra-ui/react';
 import { ArrowRightIcon, ArrowLeftIcon, ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons';
 import { Cruise } from '@/types';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 const columnHelper = createColumnHelper<Cruise>();
 
@@ -43,7 +45,7 @@ const columns = [
   }),
   columnHelper.accessor('flag_alt', {
     cell: (info) => info.getValue(),
-    header: 'Flag Alt',
+    header: 'Country',
   }),
   columnHelper.accessor('created', {
     cell: (info) => info.getValue(),
@@ -92,10 +94,8 @@ function cruisesReducer(state: CruisesTableState, action: Action): CruisesTableS
     const startIndex = (pageNumber - 1) * state.pageSize;
     const endIndex = startIndex + state.pageSize;
     const currentResults = state.allResults.slice(startIndex, endIndex);
-
     const totalAreas = currentResults.map((cruise) => Number(cruise.total_area));
     const totalArea = totalAreas.reduce((a: number, b: number) => a + b, 0);
-
     return { ...state, pageNumber, currentResults, totalAreaCurrentResults: totalArea };
   } else if (action.type === 'SET_RESULTS') {
     const numPages = Math.ceil(action.payload.length / state.pageSize);
@@ -119,12 +119,9 @@ function cruisesReducer(state: CruisesTableState, action: Action): CruisesTableS
   }
 }
 
-type CruisesTableProps = {
-  cruises: Cruise[];
-};
 
-export default function CruisesTable(props: CruisesTableProps) {
-  const { cruises } = props;
+export default function CruisesTable() {
+  const cruises = useSelector((state: RootState) => state.main.cruises);
   const [state, dispatch] = useReducer(cruisesReducer, initialState);
 
   useEffect(() => {

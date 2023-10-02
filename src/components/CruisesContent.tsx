@@ -2,11 +2,13 @@ import { Heading, Input, Center, Box, Text, Select, VStack } from '@chakra-ui/re
 import CruisesTable from './CruisesTable';
 import { useState, useEffect } from 'react';
 import { Cruise, SortByOption } from '@/types';
+import { useDispatch } from 'react-redux';
+import { mainSlice } from '@/MainSlice';
 
 export default function CruisesContent() {
   const [sortByOption, setSortByOption] = useState<SortByOption>(SortByOption.None);
-  const [cruises, setCruises] = useState<Cruise[]>([]);
   const [filterText, setFilterText] = useState<string>('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchCruises();
@@ -38,7 +40,7 @@ export default function CruisesContent() {
       });
     }
 
-    setCruises(cruises);
+    dispatch(mainSlice.actions.setCruises(cruises));
   }
 
   return (
@@ -76,7 +78,7 @@ export default function CruisesContent() {
         ></Input>
       </Center>
 
-      <CruisesTable cruises={cruises} />
+      <CruisesTable />
     </Box>
   );
 }
