@@ -34,11 +34,11 @@ export default function CruisesContent() {
     // Sorting our cruises based on user's input
     if (sortByOption === SortByOption.DateAscending) {
       cruises.sort((a: Cruise, b: Cruise) => {
-        return new Date(a.created).getTime() - new Date(b.created).getTime();
+        return new Date(a.year).getTime() - new Date(b.year).getTime();
       });
     } else if (sortByOption === SortByOption.DateDescending) {
       cruises.sort((a: Cruise, b: Cruise) => {
-        return new Date(b.created).getTime() - new Date(a.created).getTime();
+        return new Date(b.year).getTime() - new Date(a.year).getTime();
       });
     }
 
