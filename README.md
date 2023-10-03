@@ -31,6 +31,20 @@ The dev server will launch in your browser at [localhost:4444](localhost:4444) a
 
 # tide-pool
 
+## Product Requirement Assumptions
+
+> Sort cruises by date in ascending order and descending order
+
+Assumed `year` was the field for this because `created` was when the entry was put into the system.
+
+> Filter cruises by ship name, or by entry_id
+
+There was no `ship_name` field so I assumed and used `device_name` and `device_make`
+
+> Display the aggregate total area of all visible cruises
+
+Since I had to use pagination to reliably display all of the data, not entirely sure what 'visible' means. I decided to show aggregate total for both the search and the current page.
+
 ## API Wish List
 
 - API should support pagination by allowing the client to give a page number as a query (or body) param i.e. `page={2}`. FE doesn't need to load in all of the data and doesn't have to keep track of pagination state i.e. page number, num pages, etc... At scale (100k entries), this app will likely fail.
