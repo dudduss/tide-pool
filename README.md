@@ -31,6 +31,8 @@ The dev server will launch in your browser at [localhost:4444](localhost:4444) a
 
 # tide-pool
 
+[Product Demo Walkthrough]([url](https://www.loom.com/share/7cd10379a6b54c0e8f6c4a317b9036e4))
+
 ## Product Requirement Assumptions
 
 > Sort cruises by date in ascending order and descending order
